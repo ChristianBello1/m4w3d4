@@ -19,7 +19,17 @@ document.getElementById('searchForm').addEventListener('submit', async function 
     var searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
     try {
-        const users = await fetchUtenti();
+        var users;
+        // Controlla se ci sono risultati memorizzati in localStorage
+        const storedResults = localStorage.getItem('storedResults');
+        if (storedResults) {
+            users = JSON.parse(storedResults);
+        } else {
+            users = await fetchUtenti();
+            // Salva i risultati nella localStorage
+            localStorage.setItem('storedResults', JSON.stringify(users));
+        }
+
         var filteredUsers = users.filter(function (user) {
             return user[selectedOption].toLowerCase().includes(searchTerm);
         });
@@ -68,3 +78,4 @@ function displayResults(results) {
 
     resultsContainer.appendChild(table);
 }
+
